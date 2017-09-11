@@ -104,7 +104,7 @@ if __name__ == "__main__":
     api_call = slack_client.api_call("users.list")
     user_list = {} 
     for user in api_call['members']:
-        user_list[user['id']] = user['profile']['first_name']
+        user_list[user['id']] = user['profile']['real_name']
     
     while True:
         command, channel, uttering_id = parse_slack_output(slack_client.rtm_read())
