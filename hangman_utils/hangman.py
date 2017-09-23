@@ -5,18 +5,33 @@ import pandas as pd
 
 from life_bars import LIFE
 
-DIRC = "C:\Users\Sebastien\Dropbox\pythoncode\screenplay parser\cornell movie-dialogs corpus - Copy\\"
+config = ConfigParser.RawConfigParser()
+config.read('config.cfg')
+
+DIRC = config.get('CORPUS_DIRECTORY', 'WORDS')
+
+CORPUS = DIRC + 'Combined_results.txt'
+
 headings = ['word' , 'count' , 'normalized_score' , 'score']
-WORD_CORPUS = pd.read_csv( DIRC + 'Combined_results.txt', engine='python', sep=' \+{3}\$\+{3} ',  header=None, names=headings)
-            
+
+WORD_CORPUS = pd.read_csv(
+    CORPUS, 
+    engine='python', 
+    sep=' \+{3}\$\+{3} ', 
+    header=None, 
+    names=headings
+)
+           
+
 ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
-# config = ConfigParser.RawConfigParser()
-# config.read('save_data.cfg')
+# saved_data = ConfigParser.RawConfigParser()
+# saved_data.read('../save_data.cfg')
 
-# HIGHSCORE = int(config.get('Hangman Score', 'Highscore'))
-# DEATHS = int(config.get('Hangman Score', 'deaths'))
-# ALL_WORDS = int(config.get('Hangman Score', 'all_words'))
+# HIGHSCORE = int(saved_data.get('Hangman Score', 'Highscore'))
+# DEATHS = int(saved_data.get('Hangman Score', 'deaths'))
+# ALL_WORDS = int(saved_data.get('Hangman Score', 'all_words'))
+
 
 class HangingMan:
     def __init__(self):
@@ -24,22 +39,25 @@ class HangingMan:
         self.victory = False
         self.lives = 0
         self.repeated_letters = 4
-        self.hints_remain =2
+        self.hints_remain = 2
         
         self.correct_letters = []
         self.guessed_letters = []
         
         self.new_word()
 
+
     def new_word(self):
-        choose = random.randint(20, len(WORD_CORPUS['word']) )          
+        choose = random.randint(20, len(WORD_CORPUS['word']))          
         word = 	WORD_CORPUS.at[choose, 'word']
         self.word = word.lower()
-        
+
+
     def check_health(self, guess_letter):
         if self.alive == True and self.victory == False:
             return self.check_guess(guess_letter)
-        
+
+
     def check_guess(self, guess_letter):
         if guess_letter and guess_letter not in self.guessed_letters and guess_letter in ALPHABET:
             if guess_letter in self.word:
@@ -55,24 +73,25 @@ class HangingMan:
             self.repeated_letters -= 1
             
             if (self.repeated_letters) < 1:
-                response = 'Already Guessed | No more repeats remaing.'
+                response = 'Already Guessed | No more repeats remaining.'
                 return self.lose_life(response)
 
             else:
-                response = 'Already Guessed | repeats remaing: '.format(self.repeated_letters)
+                response = 'Already Guessed | repeats remaining: '.format(self.repeated_letters)
                 return response
         
         # Not a valid letter:
         else:
             self.repeated_letters -= 1            
             if (self.repeated_letters) < 1:
-                response = 'Not a Valid Guess | No more attempts remaing'
+                response = 'Not a Valid Guess | No more attempts remaining'
                 return self.lose_life(response)
                 
             else:
                 response = 'Not a Valid Guess | Attempts remaining: {}'.format(self.repeated_letters)
                 return response
-        
+
+
     def lose_life(self, response):
         self.lives += 1
         if self.lives == 6:
@@ -85,7 +104,8 @@ class HangingMan:
         
     def save_info(self):
         return 
-        
+
+
     def show_progress(self):
         hidden_word = [ '_' for x in range(len(self.word))]
     
@@ -103,7 +123,8 @@ class HangingMan:
         response = ' '.join(hidden_word)
         print response
         return response
-    
+
+
 if __name__ == "__main__":
 
     game_object = HangingMan()
