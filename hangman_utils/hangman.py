@@ -92,7 +92,7 @@ class HangingMan:
 
     def lose_life(self, response):
         self.lives += 1
-        if self.lives == 1:
+        if self.lives == 6:
             self.alive = False
             self.playing = False
             self.save_info(self.alive)
