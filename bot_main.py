@@ -45,7 +45,7 @@ KEY_WORDS = [
 
 def parse_slack_output(slack_rtm_output):
     """
-    The Slack Real Time Messaging API is an events firehose.
+    The Slack Real Time Messaging API is an events fire-hose.
     this parsing function returns None unless a message is
     directed at the Bot, based on its ID.
     """
@@ -54,7 +54,7 @@ def parse_slack_output(slack_rtm_output):
     if output_list and len(output_list) > 0:
         for output in output_list:
         
-            # Dont reply to your own comments
+            # Don't reply to your own comments
             if output and 'user' in output and output['user'] == BOT_ID:
                 return None, None, None
                 
@@ -120,7 +120,7 @@ def handle_command(command, channel, name_of_mention, bot_state, game_object=Non
                 response = GAME_STEP.format(response, game_object.show_progress())
             
         else:
-            response = "{}? Thats not recognised.".format(command)
+            response = "{}? That's not recognised.".format(command)
         
     slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
     return bot_state, game_object
