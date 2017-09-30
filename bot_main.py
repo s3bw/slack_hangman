@@ -2,7 +2,16 @@ import time
 import ConfigParser
 
 from slackclient import SlackClient
+
 import hangman_utils.hangman as hm
+from hangman_utils.game_stats import load_match_stats
+
+from bot_utils.response_templates import (
+    STATS_TEMPLATE,
+    DEATH_TEMPLATE,
+    GAME_STEP,
+    VICTORY_TEMPLATE,
+)
 
 Config = ConfigParser.ConfigParser()
 Config.read('config.cfg')
@@ -12,24 +21,31 @@ BOT_NAME = 'sweetbot'
 CHANNEL_NAME = "general"
 
 BOT_ID = Config.get('BOT_TOKEN', 'BOT_ID')
-AT_BOT = "<@" + BOT_ID + ">"
-EXAMPLE_COMMAND = "fly"
+AT_BOT = "<@{bot_id}>".format(bot_id=BOT_ID)
+
+EXAMPLE_COMMAND = "?"
 
 READ_WEBSOCKET_DELAY = 1
 
 slack_client = SlackClient(BOT_TOKEN)
 slack_client.rtm_connect()
 
+play_hangman_list = [
+    'hangman',
+    'play',
+    'start',
+]
+
 KEY_WORDS = [
     'sweetbot',
-    'fly',
+    '?',
     AT_BOT
 ]
 
 
 def parse_slack_output(slack_rtm_output):
     """
-    The Slack Real Time Messaging API is an events firehose.
+    The Slack Real Time Messaging API is an events fire-hose.
     this parsing function returns None unless a message is
     directed at the Bot, based on its ID.
     """
@@ -38,7 +54,7 @@ def parse_slack_output(slack_rtm_output):
     if output_list and len(output_list) > 0:
         for output in output_list:
         
-            # Dont reply to your own comments
+            # Don't reply to your own comments
             if output and 'user' in output and output['user'] == BOT_ID:
                 return None, None, None
                 
@@ -47,7 +63,7 @@ def parse_slack_output(slack_rtm_output):
                 user_id = output['user']
             
                 # Contains command word
-                if 'fly' in utterance:
+                if EXAMPLE_COMMAND in utterance:
                     return utterance.strip().lower(), output['channel'], user_id
                        
                 # return text after the @ mention, whitespace removed
@@ -73,23 +89,38 @@ def handle_command(command, channel, name_of_mention, bot_state, game_object=Non
     are valid commands. If so, then acts on the commands. If not,
     returns back what it needs for clarification.
     """
-    response = "Not sure what you mean. Use the *" + EXAMPLE_COMMAND + \
-               "* command with numbers, delimited by spaces."
+    response = "Not sure what you mean. Use the *{eg_command}* command with numbers, delimited by spaces.".format(eg_command=EXAMPLE_COMMAND)
 
     if command.startswith(EXAMPLE_COMMAND):
         command = command.split(EXAMPLE_COMMAND)[1]
         print bot_state, command
-        if bot_state == 'listening' and command == 'hangman':
+        
+        initialise_hangman = command in play_hangman_list
+        
+        if bot_state == 'listening' and initialise_hangman:
             bot_state = 'playing'
             game_object = hm.HangingMan()
             response = 'Hangman initialised!'
             
+        elif bot_state == 'listening' and command == 'stats':
+            response = STATS_TEMPLATE.format(load_match_stats())
+            
         elif bot_state == 'playing' and len(command) == 1:
             response = game_object.check_health(guess_letter=command)
-            response = '\n\n{} Hidden word: `{}`'.format(response, game_object.show_progress())
+            
+            if game_object.alive == False:
+                bot_state = 'listening'
+                response = DEATH_TEMPLATE.format(response)
+                
+            if game_object.victory == True:
+                bot_state = 'listening'
+                response = VICTORY_TEMPLATE.format(response)
+            
+            else:
+                response = GAME_STEP.format(response, game_object.show_progress())
             
         else:
-            response = "{}? Thats not recognised.".format(command)
+            response = "{}? That's not recognised.".format(command)
         
     slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
     return bot_state, game_object
