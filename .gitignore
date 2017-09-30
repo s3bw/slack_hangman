@@ -1,6 +1,9 @@
 # Local Config.
 *.cfg
 
+# The hangman game I built
+Hangman.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
