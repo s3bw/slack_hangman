@@ -1,32 +1,25 @@
 import os
 import random
-import ConfigParser
-
-import pandas as pd
 
 from life_bars import LIFE
 from game_stats import update_match
 
-abs_config_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'config.cfg'))
-config = ConfigParser.RawConfigParser()
-config.read(abs_config_path)
-
-DIRC = config.get('CORPUS_DIRECTORY', 'WORDS')
-
-CORPUS = DIRC + 'Combined_results.txt'
-
-headings = ['word' , 'count' , 'normalized_score' , 'score']
-
-WORD_CORPUS = pd.read_csv(
-    CORPUS, 
-    engine='python', 
-    sep=' \+{3}\$\+{3} ', 
-    header=None, 
-    names=headings
-)
 
 ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
+
+def load_words():
+    word_file = 'words.txt'
+    word_path = os.path.join(os.path.dirname(__file__), word_file)
+    word_directory = os.path.abspath(word_path)
+
+    with open(word_directory, 'r') as words:
+        word_data = words.read().split('\n')
+
+    return word_data
+
+
+WORD_CORPUS = load_words()
 
 class HangingMan:
     def __init__(self):
@@ -43,8 +36,8 @@ class HangingMan:
         self.new_word()
 
     def new_word(self):
-        choose = random.randint(20, len(WORD_CORPUS['word']))          
-        word = 	WORD_CORPUS.at[choose, 'word']
+        choose = random.randint(0, len(WORD_CORPUS))
+        word = 	WORD_CORPUS[choose]
         self.word = word.lower()
 
 
