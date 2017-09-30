@@ -3,7 +3,7 @@ import ConfigParser
 
 from slackclient import SlackClient
 
-import hangman_utils.hangman as hm
+from hangman_utils.hangman import HangingMan
 from hangman_utils.game_stats import load_match_stats
 
 from bot_utils.response_templates import (
@@ -99,7 +99,7 @@ def handle_command(command, channel, name_of_mention, bot_state, game_object=Non
         
         if bot_state == 'listening' and initialise_hangman:
             bot_state = 'playing'
-            game_object = hm.HangingMan()
+            game_object = HangingMan()
             response = 'Hangman initialised!'
             
         elif bot_state == 'listening' and command == 'stats':
