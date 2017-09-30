@@ -122,17 +122,25 @@ class HangingMan:
                 hidden_word[i] =  '_'
 
         response = ' '.join(hidden_word)
-        print response
+        
+        if __name__ != "__main__":
+            print response
+            
         return response
 
 
 if __name__ == "__main__":
 
     game_object = HangingMan()
-    while True:
+    while game_object.alive and game_object.victory == False:
         command = raw_input('take a guess:')
         print game_object.check_health(guess_letter=command)
         print game_object.show_progress()
-
+        
+    if game_object.victory:
+        print 'Victory'
+        
+    else:
+        print 'You died'
 
 
