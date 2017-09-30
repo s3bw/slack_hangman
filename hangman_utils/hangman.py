@@ -36,7 +36,7 @@ class HangingMan:
         self.new_word()
 
     def new_word(self):
-        choose = random.randint(0, len(WORD_CORPUS))
+        choose = random.randint(0, len(WORD_CORPUS) - 1)
         word = 	WORD_CORPUS[choose]
         self.word = word.lower()
 
@@ -56,7 +56,10 @@ class HangingMan:
             if guess_letter in self.word:
                 self.correct_letters.append(guess_letter)
                 self.guessed_letters.append(guess_letter)
-                # Can include more sayings
+                
+                if set(self.correct_letters) == set(list(self.word)):
+                     return self.win_match()
+                
                 return 'Correct Guess, keep it up!'
                 
             # Incorrect Guess
@@ -97,6 +100,12 @@ class HangingMan:
 
         return '{} You have lost a life: {}'.format(response, LIFE[self.lives])
         
+    def win_match(self):
+        self.victory = True
+        self.playing = False
+        self.save_info(self.alive)        
+        return 'Word: {}'.format(self.word)
+        
         
     def save_info(self, game_outcome):
         update_match(game_outcome) 
@@ -105,17 +114,13 @@ class HangingMan:
     def show_progress(self):
         hidden_word = [ '_' for x in range(len(self.word))]
     
-        for i,letter in enumerate(self.word):
+        for i, letter in enumerate(self.word):
             if letter in self.correct_letters:
-                progress_letter = '' + letter + ''
-                hidden_word = hidden_word[:i] + [progress_letter] + hidden_word[i+1:]
+                hidden_word = hidden_word[:i] + [letter] + hidden_word[i+1:]
+                
             else:
                 hidden_word[i] =  '_'
-                
-        if '_' not in hidden_word:
-            self.victory = True
-            return 'Word: {}'.format(self.word)
-                
+
         response = ' '.join(hidden_word)
         print response
         return response

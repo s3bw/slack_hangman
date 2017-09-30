@@ -14,8 +14,13 @@ Your stats: `?me`
 Play Again: `?hangman`
 """
 
-VICTORY_TEMPLATE = """Great Work!
+VICTORY_TEMPLATE = """You Win Great Work!
 {}
+How would you like to continue?
+Display Stats: `?stats`
+Leaderboard: `?leaders`
+Your stats: `?me`
+Play Again: `?hangman`
 """
 
 GAME_STEP = '{} Hidden word: `{}`'
