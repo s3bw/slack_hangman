@@ -6,6 +6,14 @@ Words Seen: `{0[2]}`
 Current Streak: `{0[3]}`
 """
 
+PLAYER_STATS_TEMPLATE = """`Your Stats:`
+High Score: `{player_data[highscore]}`
+Incorrect: `{player_data[incorrect]}`
+Total Guesses: `{player_data[total_guesses]}`
+Current Streak: `{player_data[current_streak]}`
+Accuracy: `{player_data[accuracy]:.0%}`
+"""
+
 DEATH_TEMPLATE = """You have died... the word was *{0[0]}*. {0[1]}
 How would you like to continue?
 Display Stats: `?stats`

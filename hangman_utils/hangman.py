@@ -3,6 +3,7 @@ import random
 
 from .life_bars import LIFE
 from .game_stats import update_match
+from .player_stats import update_player
 
 
 ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
@@ -41,12 +42,12 @@ class HangingMan:
         self.word = word.lower()
 
 
-    def check_health(self, guess_letter):
+    def check_health(self, guess_letter, guessed_by):
         if self.alive == True and self.victory == False:
-            return self.check_guess(guess_letter)
+            return self.check_guess(guess_letter, guessed_by)
 
 
-    def check_guess(self, guess_letter):
+    def check_guess(self, guess_letter, guessed_by):
         guess_is_letter = guess_letter in ALPHABET
         not_repeated_guess = guess_letter not in self.guessed_letters
         
@@ -56,6 +57,7 @@ class HangingMan:
             if guess_letter in self.word:
                 self.correct_letters.append(guess_letter)
                 self.guessed_letters.append(guess_letter)
+                update_player(guessed_by, correct_guess=True)
                 
                 if set(self.correct_letters) == set(list(self.word)):
                      return self.win_match()
@@ -65,6 +67,7 @@ class HangingMan:
             # Incorrect Guess
             else:
                 self.guessed_letters.append(guess_letter)
+                update_player(guessed_by, correct_guess=False)
                 response = '{} is incorrect'.format(guess_letter)
                 return self.lose_life(response)
                 
@@ -99,7 +102,8 @@ class HangingMan:
             return (self.word, LIFE[self.lives])
 
         return '{} You have lost a life: {}'.format(response, LIFE[self.lives])
-        
+
+
     def win_match(self):
         self.victory = True
         self.playing = False
