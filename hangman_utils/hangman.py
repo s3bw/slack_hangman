@@ -1,8 +1,8 @@
 import os
 import random
 
-from life_bars import LIFE
-from game_stats import update_match
+from .life_bars import LIFE
+from .game_stats import update_match
 
 
 ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
@@ -124,7 +124,7 @@ class HangingMan:
         response = ' '.join(hidden_word)
         
         if __name__ != "__main__":
-            print response
+            print(response)
             
         return response
 
@@ -134,13 +134,13 @@ if __name__ == "__main__":
     game_object = HangingMan()
     while game_object.alive and game_object.victory == False:
         command = raw_input('take a guess:')
-        print game_object.check_health(guess_letter=command)
-        print game_object.show_progress()
+        print(game_object.check_health(guess_letter=command))
+        print(game_object.show_progress())
         
     if game_object.victory:
-        print 'Victory'
+        print('Victory')
         
     else:
-        print 'You died'
+        print('You died')
 
 

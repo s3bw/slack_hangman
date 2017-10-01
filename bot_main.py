@@ -1,5 +1,5 @@
 import time
-import ConfigParser
+import configparser
 
 from slackclient import SlackClient
 
@@ -13,14 +13,14 @@ from bot_utils.response_templates import (
     VICTORY_TEMPLATE,
 )
 
-Config = ConfigParser.ConfigParser()
-Config.read('config.cfg')
+config = configparser.ConfigParser()
+config.read('config.cfg')
 
-BOT_TOKEN = Config.get('BOT_TOKEN', 'API_TOKEN')
+BOT_TOKEN = config.get('BOT_TOKEN', 'API_TOKEN')
 BOT_NAME = 'sweetbot'
 CHANNEL_NAME = "general"
 
-BOT_ID = Config.get('BOT_TOKEN', 'BOT_ID')
+BOT_ID = config.get('BOT_TOKEN', 'BOT_ID')
 AT_BOT = "<@{bot_id}>".format(bot_id=BOT_ID)
 
 EXAMPLE_COMMAND = "?"
@@ -93,7 +93,7 @@ def handle_command(command, channel, name_of_mention, bot_state, game_object=Non
 
     if command.startswith(EXAMPLE_COMMAND):
         command = command.split(EXAMPLE_COMMAND)[1]
-        print bot_state, command
+        print(bot_state, command)
         
         initialise_hangman = command in play_hangman_list
         
@@ -120,7 +120,7 @@ def handle_command(command, channel, name_of_mention, bot_state, game_object=Non
                 response = GAME_STEP.format(response, game_object.show_progress())
             
         else:
-            response = "{}? That's not recognised.".format(command)
+            response = "'{}' is not recognised.".format(command)
         
     slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
     return bot_state, game_object

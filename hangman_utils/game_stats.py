@@ -1,8 +1,8 @@
 import os
-import ConfigParser
+import configparser
 
 abs_save_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'save_data.cfg'))
-saved_data = ConfigParser.RawConfigParser()
+saved_data = configparser.RawConfigParser()
 saved_data.read(abs_save_path)
 
 def load_data(field):
@@ -12,7 +12,7 @@ def set_data(field, value):
     saved_data.set('HANGMAN_SCORE', field, str(value))
     
 def save_data():
-    with open(abs_save_path, 'wb') as configfile:
+    with open(abs_save_path, 'w') as configfile:
         saved_data.write(configfile)
 
 def load_match_stats():
