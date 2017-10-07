@@ -131,7 +131,7 @@ if __name__ == "__main__":
     
     # get user list
     api_call = slack_client.api_call("users.list")
-    print(api_call)
+
     user_list = {} 
     for user in api_call['members']:
         user_list[user['id']] = user['profile']['real_name']
