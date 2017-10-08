@@ -5,7 +5,6 @@ from slackclient import SlackClient
 
 from hangman_utils import (
     HangingMan,
-    load_game_data,
     load_data,
 )
 
@@ -98,8 +97,7 @@ def handle_command(command, channel, player_guessing, bot_state, game_object=Non
             response = 'Hangman initialised!'
             
         elif bot_state == 'listening' and command == 'stats':
-            print(load_game_data('HANGMAN_SCORE'))
-            response = STATS_TEMPLATE.format(game_data=load_game_data('HANGMAN_SCORE'))
+            response = STATS_TEMPLATE.format(game_data=load_data('HANGMAN_SCORE'))
             
         elif bot_state == 'listening' and command == 'me':
             response = PLAYER_STATS_TEMPLATE.format(player_data=load_data(player_id))

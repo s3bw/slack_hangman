@@ -21,25 +21,35 @@ game_stats = [
 ]
 
 
-def load_game_data(section):
+player_stats = [
+    'highscore',
+    'incorrect',
+    'total_guesses',
+    'current_streak',
+    'accuracy',
+]
+
+
+def load_data(section_id):
+    load_fields = game_stats if section_id == 'HANGMAN_SCORE' else player_stats
+    print(load_fields)
     try:
-        return {field: float(saved_data.get(section, field)) for field in game_stats}
+        return {field: float(saved_data.get(section_id, field)) for field in load_fields}
 
     except configparser.NoSectionError:
-        saved_data.add_section(section)
-        game_dict = {field: 0 for field in list_of_fields}
-        set_dict_data(section, game_dict)
+        saved_data.add_section(section_id)
+        data_dict = {field: 0 for field in load_fields}
+        print(data_dict)
+        set_data(section_id, data_dict)
 
-        return game_dict
-
-
-    return int(saved_data.get('HANGMAN_SCORE', field))
+        return data_dict
 
 
-def set_data(section, game_dict):
+def set_data(section_id, data_dict):
+    load_fields = game_stats if section_id == 'HANGMAN_SCORE' else player_stats
 
-    for field in game_stats:
-        saved_data.set(section, field, str(game_dict[field]))
+    for field in load_fields:
+        saved_data.set(section_id, field, str(data_dict[field]))
 
 
 def save_data():
@@ -48,7 +58,7 @@ def save_data():
 
 
 def update_match(good_result):
-    game_dict = load_game_data('HANGMAN_SCORE')
+    game_dict = load_data('HANGMAN_SCORE')
 
     game_dict['all_words'] += 1
     if good_result:
@@ -63,5 +73,27 @@ def update_match(good_result):
         game_dict['current_streak'] = 0
     
     set_data('HANGMAN_SCORE', game_dict)
+    save_data()
+
+
+def update_player(player_id, correct_guess):
+    player_dict = load_data(player_id)
+    
+    player_dict['total_guesses'] += 1
+    if correct_guess:
+        player_dict['current_streak'] += 1
+        
+        new_highscore = player_dict['current_streak'] > player_dict['highscore']
+        if new_highscore:
+            player_dict['highscore'] = player_dict['current_streak']
+            
+    else:
+        player_dict['incorrect'] += 1
+        player_dict['current_streak'] = 0
+        
+    correct_guesses = player_dict['total_guesses'] - player_dict['incorrect']
+    player_dict['accuracy'] = correct_guesses / player_dict['total_guesses']
+        
+    set_data(player_id, player_dict)
     save_data()
 
