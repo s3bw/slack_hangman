@@ -1,5 +1,6 @@
 # Local Config.
 *.cfg
+*.swp
 
 # The hangman game I built
 Hangman.py
