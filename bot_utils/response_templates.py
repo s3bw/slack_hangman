@@ -1,9 +1,9 @@
 
 STATS_TEMPLATE = """`Game Play Stats:`
-High Score: `{0[0]}`
-Deaths: `{0[1]}`
-Words Seen: `{0[2]}`
-Current Streak: `{0[3]}`
+High Score: `{game_data[highscore]}`
+Deaths: `{game_data[deaths]}`
+Words Seen: `{game_data[all_words]}`
+Current Streak: `{game_data[current_streak]}`
 """
 
 PLAYER_STATS_TEMPLATE = """`Your Stats:`

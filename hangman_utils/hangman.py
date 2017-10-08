@@ -2,7 +2,7 @@ import os
 import random
 
 from .life_bars import LIFE
-from .game_stats import update_match
+from .save_data import update_match
 from .player_stats import update_player
 
 
