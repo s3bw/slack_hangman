@@ -32,14 +32,12 @@ player_stats = [
 
 def load_data(section_id):
     load_fields = game_stats if section_id == 'HANGMAN_SCORE' else player_stats
-    print(load_fields)
     try:
         return {field: float(saved_data.get(section_id, field)) for field in load_fields}
 
     except configparser.NoSectionError:
         saved_data.add_section(section_id)
         data_dict = {field: 0 for field in load_fields}
-        print(data_dict)
         set_data(section_id, data_dict)
 
         return data_dict
